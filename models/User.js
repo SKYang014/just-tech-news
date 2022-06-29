@@ -9,7 +9,26 @@ const sequelize = require('../config/connection');
 const bcrypt = require('bcrypt');
 
 // create our User model
-class User extends Model { }
+class User extends Model {
+
+    //In Object Oriented Programming, an instance method returns or 
+    //makes use of information (i.e., properties) specific to that 
+    //particular object. (Remember that objects generated from classes 
+    //are instances of the class.)
+
+    //So, we should create an instance method on the User model 
+    //definition to access the password property of each user instance
+
+    //add an instance method called checkPassword that takes in 
+    //the plaintext password retrieved from the client request at 
+    //req.body.email and compares that with the hashed password. 
+    //This method will include the compareSync function from bcrypt
+    // set up method to run on instance data (per user) to check password
+    checkPassword(loginPw) {
+        return bcrypt.compareSync(loginPw, this.password);
+    }
+}
+
 
 //Once we create the User class, we use the .init() method to 
 //initialize the model's data and configuration, passing in two 
