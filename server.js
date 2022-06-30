@@ -34,3 +34,14 @@ sequelize.sync({ force: false }).then(() => {
 //that something has changed. We'll have to do that a few times
 //throughout this project, so it's best to keep the {force: false}
 //there for now.
+
+//In the sync method, there is a configuration parameter 
+//{ force: false }. If we change the value of the force property 
+//to true, then the database connection must sync with the model 
+//definitions and associations. By forcing the sync method to true, 
+//we will make the tables re-create if there are any association changes.
+
+//Then we should change this value back to false. Dropping all the 
+//tables every time the application restarts is no longer necessary 
+//and in fact will constantly drop all the entries and seed data we enter,
+// which can get very annoying.
