@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { User } = require('../../models');
+const { User, Post, Vote } = require("../../models");
 
 // GET /api/users
 // GET /api/users
@@ -11,11 +11,7 @@ router.get('/', (req, res) => {
     //the user table in the database, and is the JavaScript equivalent 
     //of the following SQL query:
     User.findAll({
-        //Notice how we now pass an object into the method like we do 
-        //with the .findOne() method. This time, we've provided an 
-        //attributes key and instructed the query to exclude the 
-        //password column. It's in an array because if we want to 
-        //exclude more than one, we can just add more.
+
         attributes: { exclude: ['password'] }
     })
         .then(dbUserData => res.json(dbUserData))
@@ -41,7 +37,29 @@ router.get('/:id', (req, res) => {
         attributes: { exclude: ['password'] },
         where: {
             id: req.params.id
-        }
+        },
+        //now when we query a single user, we'll receive the title 
+        //information of every post they've ever voted on.
+        //We had to include the Post model, as we did before; 
+        //but this time we had to contextualize it by going through
+        // the Vote table.
+        include: [
+            {
+                model: Post,
+                attributes: ['id', 'title', 'post_url', 'created_at']
+            },
+            {
+                //Notice how we now pass an object into the method like we do 
+                //with the .findOne() method. This time, we've provided an 
+                //attributes key and instructed the query to exclude the 
+                //password column. It's in an array because if we want to 
+                //exclude more than one, we can just add more.
+                model: Post,
+                attributes: ['title'],
+                through: Vote,
+                as: 'voted_posts'
+            }
+        ]
     })
         //Because we're looking for one user, there's the possibility 
         //that we could accidentally search for a user with a nonexistent 
